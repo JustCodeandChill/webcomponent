@@ -2,41 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Web Components</title>
-    <script src="./showBox.js"></script>
+    <title>WC</title>
     <style>
-      #info-box {
-        display: none;
+      div {
+        border: 3px solid red;
       }
     </style>
+    <script src="tooltip.js"></script>
+    <script src="confirm-link.js"></script>
   </head>
   <body>
-    <button>Show</button>
-    <p id="info-box">More infos!</p>
-    <hr></hr>
-<at-show-box text="less infos"><span slot="l">vo quiyen</span></at-show-box>
-        <hr></hr>
-    <at-show-box text="less infos"><span slot="f">vo quiyen</span></at-show-box>
+    <p>Hmmmm <uc-tooltip text="wc is a set of standard">Lala</uc-tooltip></p>
 
-    <script>
-      const button = document.querySelector("button");
-      const infoEl = document.querySelector("p");
-
-      let isHidden = true;
-
-      button.addEventListener("click", () => {
-        if (isHidden) {
-          infoEl.style.display = "block";
-          button.textContent = "Hide";
-          isHidden = false;
-        } else {
-          infoEl.style.display = "none";
-          button.textContent = "Show";
-          isHidden = true;
-        }
-      });
-    </script>
+    <uc-tooltip></uc-tooltip>
+    <div>asd</div>
+    <a is="at-confirmlink" href="https://www.google.com">Google</a>
   </body>
 </html>

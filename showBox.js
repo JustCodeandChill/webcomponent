@@ -7,8 +7,23 @@ class ShowBox extends HTMLElement {
     this._isHidden = true;
     this.attachShadow({ mode: "open" });
     this.shadowRoot.innerHTML = `
+    <style>
+       ::slotted(.h) {
+        background-color: blue;
+      }
+
+      :host {
+        border: var(--border-style);
+        background-color: var(--white, #ccc);
+      }
+
+      :host-context(p) {
+        background-color: black
+      }
+
+    </style>
       <slot name="f"></slot>
-     <span>Ha ha you</span>
+      <span>Ha ha you</span>
       <slot name="l"></slot>
     `;
   }
@@ -16,6 +31,7 @@ class ShowBox extends HTMLElement {
   connectedCallback() {
     this._button = document.createElement("button");
     this._button.textContent = "Show";
+    //this._button.classList.add("h");
     this._button.addEventListener("click", this._buttonClick.bind(this));
     this.shadowRoot.appendChild(this._button);
 
@@ -23,6 +39,29 @@ class ShowBox extends HTMLElement {
     this._paragraph.textContent = this.getAttribute("text") || "More infos";
     this._checkHidden();
     this.shadowRoot.appendChild(this._paragraph);
+  }
+
+  disconnectedCallback() {
+    console.log("clear elistener");
+    this._button.removeEventListener("click", this._buttonClick);
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.log(name, oldValue, newValue);
+
+    if (oldValue === newValue) {
+      return;
+    }
+
+    if (name === "text") {
+      if (this._paragraph) {
+        this._paragraph.textContent = newValue;
+      }
+    }
+  }
+
+  static get observedAttributes() {
+    return ["text"];
   }
 
   _checkHidden() {
