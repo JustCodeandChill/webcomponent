@@ -46,6 +46,23 @@
         height: 10px;
         width: 5px;
       }
+
+      ul {
+        border: 1px solid red;
+      }
+
+      ul li.list-item:hover {
+        background: #ddd;
+        cursor: pointer;
+      }
+
+      ul li:nth-child(even) {
+        background-color: #ccc;
+      }
+
+      ul li:nth-child(odd) {
+        background: #f9f9f9;
+      }
     </style>
   </head>
   <body>
@@ -68,20 +85,22 @@
         {
           id: 0,
           todo: "clean the house",
+          isChecked: false,
         },
       ];
       const todoInput = document.getElementById("todos");
       const todosList = document.getElementById("todosList");
       const buttons = document.getElementsByClassName("delete");
 
-      const createTodo = ({ id, todo }) => {
+      const createTodo = ({ id, todo, isChecked }) => {
         const list = document.createElement("li");
         list.classList.add("list-item");
         list.id = id;
 
         const task = document.createElement("span");
         task.textContent = todo || "not a task";
-        task.classList.add("list-item__tasks");
+        task.classList.add(`list-item__tasks`);
+        if (isChecked) task.classList.add(`checked`);
 
         // buttons
         const buttons = document.createElement("span");
@@ -119,20 +138,27 @@
           const newTodo = {
             id: todos.length,
             todo: e.target.value,
+            isChecked: false,
           };
           todos = [...todos, newTodo];
           render();
+          e.target.value = "";
         }
       });
 
       todosList.addEventListener(
         "click",
-        (e) => {
+        function (e) {
           if (e.target.tagName === "SPAN") {
-            if (e.target.classList.contains("checked")) {
-              e.target.classList.remove("checked");
-            } else {
-              e.target.classList.add("checked");
+            const todoId = e.target.parentElement.id || null;
+            if (todoId) {
+              todos.forEach((todo) => {
+                if (parseInt(todo.id) === parseInt(todoId)) {
+                  todo.isChecked = !todo.isChecked;
+                }
+              });
+
+              render();
             }
           }
         },
