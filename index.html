@@ -4,20 +4,88 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WC</title>
+    <title>Document</title>
     <style>
-      div {
-        border: 3px solid red;
+      .list-item {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+      }
+
+      .list-item__tasks {
+        max-width: 80%;
+        width: 100%;
+      }
+
+      .list-item__buttons {
+        cursor: pointer;
+      }
+
+      ul li.checked {
+        background: #888;
+        color: #fff;
+        text-decoration: line-through;
       }
     </style>
-    <script src="tooltip.js"></script>
-    <script src="confirm-link.js"></script>
   </head>
   <body>
-    <p>Hmmmm <uc-tooltip text="wc is a set of standard">Lala</uc-tooltip></p>
+    <p>
+      <label for="todos">Enter task</label>
+      <input type="text" name="" id="todos" placeholder="enter task" />
+    </p>
 
-    <uc-tooltip></uc-tooltip>
-    <div>asd</div>
-    <a is="at-confirmlink" href="https://www.google.com">Google</a>
+    <ul class="todo-list" id="todosList">
+      <li class="list-item" id="0">
+        <span class="list-item__tasks">Clean the house</span>
+        <span class="list-item__buttons">
+          <button>Delete</button>
+        </span>
+      </li>
+    </ul>
+
+    <script>
+      let todos = [
+        {
+          id: 1,
+          todo: "clean the house",
+        },
+      ];
+      const todoInput = document.getElementById("todos");
+      const todosList = document.getElementById("todosList");
+
+      const createTodo = ({ id, todo }) => {
+        const list = document.createElement("li");
+        list.classList.add("list-item");
+        list.id = id;
+
+        const task = document.createElement("span");
+        task.textContent = todo || "not a task";
+        task.classList.add("list-item__tasks");
+
+        // buttons
+        const buttons = document.createElement("span");
+        buttons.classList.add("list-item__buttons");
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        buttons.appendChild(deleteBtn);
+
+        // add everything
+        list.appendChild(task);
+        list.appendChild(buttons);
+        todosList.appendChild(list);
+      };
+
+      todoInput.addEventListener("keypress", (e) => {
+        if (e.keyCode === 13) {
+          console.log(e.target.value);
+          const newTodo = {
+            id: todos.length,
+            todo: e.target.value,
+          };
+          todos = [...todos, newTodo];
+          createTodo(newTodo);
+        }
+      });
+    </script>
   </body>
 </html>
