@@ -10,21 +10,41 @@
         width: 100%;
         display: flex;
         flex-direction: row;
+        align-items: center;
+        min-height: 2rem;
       }
 
       .list-item__tasks {
         max-width: 80%;
         width: 100%;
+        height: 100%;
+        position: relative;
+        padding: 1em 0 1em 2em;
       }
 
       .list-item__buttons {
         cursor: pointer;
+        display: inline-block;
+        height: 100%;
       }
 
-      ul li.checked {
+      .checked {
         background: #888;
         color: #fff;
         text-decoration: line-through;
+      }
+
+      ul .checked::before {
+        content: "";
+        position: absolute;
+        border-color: #fff;
+        border-style: solid;
+        border-width: 0 2px 2px 0;
+        top: 1em;
+        left: 10px;
+        transform: rotate(45deg);
+        height: 10px;
+        width: 5px;
       }
     </style>
   </head>
@@ -35,23 +55,24 @@
     </p>
 
     <ul class="todo-list" id="todosList">
-      <li class="list-item" id="0">
+      <!--<li class="list-item" id="0">
         <span class="list-item__tasks">Clean the house</span>
         <span class="list-item__buttons">
-          <button>Delete</button>
+          <button class="delete">Delete</button>
         </span>
-      </li>
+      </li>-->
     </ul>
 
     <script>
       let todos = [
         {
-          id: 1,
+          id: 0,
           todo: "clean the house",
         },
       ];
       const todoInput = document.getElementById("todos");
       const todosList = document.getElementById("todosList");
+      const buttons = document.getElementsByClassName("delete");
 
       const createTodo = ({ id, todo }) => {
         const list = document.createElement("li");
@@ -67,6 +88,7 @@
         buttons.classList.add("list-item__buttons");
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
+        deleteBtn.classList.add("delete");
         buttons.appendChild(deleteBtn);
 
         // add everything
@@ -75,17 +97,49 @@
         todosList.appendChild(list);
       };
 
+      const render = () => {
+        todosList.innerHTML = "";
+        todos.forEach((todo) => {
+          createTodo(todo);
+        });
+
+        for (let i = 0; i < buttons.length; i++) {
+          buttons[i].addEventListener("click", function (e) {
+            const todoId = this.parentElement.parentElement.id || null;
+            if (todoId) {
+              todos = todos.filter(({ id }) => parseInt(id) !== parseInt(todoId));
+              render();
+            }
+          });
+        }
+      };
+
       todoInput.addEventListener("keypress", (e) => {
         if (e.keyCode === 13) {
-          console.log(e.target.value);
           const newTodo = {
             id: todos.length,
             todo: e.target.value,
           };
           todos = [...todos, newTodo];
-          createTodo(newTodo);
+          render();
         }
       });
+
+      todosList.addEventListener(
+        "click",
+        (e) => {
+          if (e.target.tagName === "SPAN") {
+            if (e.target.classList.contains("checked")) {
+              e.target.classList.remove("checked");
+            } else {
+              e.target.classList.add("checked");
+            }
+          }
+        },
+        false
+      );
+
+      render();
     </script>
   </body>
 </html>
